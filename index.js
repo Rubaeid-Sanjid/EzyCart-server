@@ -31,15 +31,20 @@ async function run() {
       const page = parseInt(req.query.page);
       const size = parseInt(req.query.items);
 
+      const searchText = req.query.search;
+      const query = searchText
+        ? { Product_Name: { $regex: searchText, $options: "i" } }
+        : {};
+
       const products = await productCollection
-        .find()
+        .find(query)
         .skip(page * size)
         .limit(size)
         .toArray();
 
       const totalProducts = await productCollection.estimatedDocumentCount();
 
-      res.send({products, totalProducts});
+      res.send({ products, totalProducts });
     });
 
     // Send a ping to confirm a successful connection
