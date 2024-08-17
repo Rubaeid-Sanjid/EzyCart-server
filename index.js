@@ -32,9 +32,30 @@ async function run() {
       const size = parseInt(req.query.items);
 
       const searchText = req.query.search;
-      const query = searchText
-        ? { Product_Name: { $regex: searchText, $options: "i" } }
-        : {};
+
+      const brand = req.query.brand;
+      const category = req.query.category;
+
+      const minPrice = parseFloat(req.query.minPrice);
+      const maxPrice = parseFloat(req.query.maxPrice);
+
+      let query = {};
+
+      if (searchText) {
+        query.Product_Name = { $regex: searchText, $options: "i" };
+      }
+
+      if (brand) {
+        query.Brand_Name = { $regex: brand, $options: "i" };
+      }
+
+      if (category) {
+        query.Category = { $regex: category, $options: "i" };
+      }
+
+      if (minPrice || maxPrice) {
+        query.Price = { $gte: minPrice, $lte: maxPrice };
+      }
 
       const products = await productCollection
         .find(query)
