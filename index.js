@@ -39,6 +39,8 @@ async function run() {
       const minPrice = parseFloat(req.query.minPrice);
       const maxPrice = parseFloat(req.query.maxPrice);
 
+      const sortBy = req.query.sortBy;
+
       let query = {};
 
       if (searchText) {
@@ -57,8 +59,19 @@ async function run() {
         query.Price = { $gte: minPrice, $lte: maxPrice };
       }
 
+      // For Sorting
+      let sort = {};
+      if (sortBy === "priceLowToHigh") {
+        sort.Price = 1;
+      } else if (sortBy === "priceHighToLow") {
+        sort.Price = -1;
+      } else if (sortBy === "newestFirst") {
+        sort.Product_Creation_date = -1;
+      }
+
       const products = await productCollection
         .find(query)
+        .sort(sort)
         .skip(page * size)
         .limit(size)
         .toArray();
