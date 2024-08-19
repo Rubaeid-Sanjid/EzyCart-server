@@ -8,7 +8,7 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 //middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://ezycart-c0012.web.app/"],
+    origin: ["http://localhost:5173", "https://ezycart-c0012.web.app"],
   })
 );
 app.use(express.json());
@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
     const productCollection = client.db("EzyCart").collection("products");
 
